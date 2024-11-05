@@ -5,7 +5,7 @@ on:
     - "*" # Running this workflow for any tag
 
 jobs:
-  push-webserver-image:
+  push-chiaki-build-image:
     runs-on: ubuntu-latest
     defaults:
       run:
