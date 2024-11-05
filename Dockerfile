@@ -35,7 +35,7 @@ RUN pacman --noconfirm -Syu && \
 		python-protobuf \
 		devkitARM \
 		switch-pkg-config \
-		devkitpro-pkgbuild-helpers \
+		dkp-toolchain-vars \
 		switch-dev \
 		switch-zlib \
 		switch-sdl2 \
