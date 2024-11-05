@@ -32,6 +32,7 @@ RUN pacman --noconfirm -Syu && \
 		cmake \
 		vim \
 		protobuf \
+		fftw \
 		python-protobuf \
 		devkitARM \
 		switch-pkg-config \
@@ -54,8 +55,10 @@ RUN pacman --noconfirm -Syu && \
 		switch-bzip2 \
 		switch-libopus \
 		switch-ffmpeg \
-		switch-mbedtls && \
-  yes | pacman -Scc
+		switch-mbedtls \
+		switch-libjson-c \
+		switch-miniupnpc  && \
+		yes | pacman -Scc
 
 # the `pacman --noconfirm -Scc` command
 # does not assume yes on /var/cache/pacman/pkg/
