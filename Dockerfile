@@ -1,3 +1,4 @@
+#https://github.com/devkitPro/pacman/releases
 FROM docker.io/library/archlinux:latest
 
 ENV DEVKITPRO=/opt/devkitpro
@@ -24,19 +25,20 @@ RUN cat ./devkit_repo >> /etc/pacman.conf
 # Now resync the database and update installed packages.
 # And install requirements
 RUN pacman --noconfirm -Syu && \
-	pacman --noconfirm -S \
+	pacman --noconfirm -Su \
 		git \
 		pkg-config \
 		make \
 		ninja \
 		cmake \
+		gcc \
 		vim \
 		protobuf \
 		fftw \
 		python-protobuf \
+		lib32-glibc \
+		openssl-1.1 \
 		devkitARM \
-		json-c \
-		lib32-json-c \
 		switch-pkg-config \
 		dkp-toolchain-vars \
 		switch-dev \
@@ -58,12 +60,18 @@ RUN pacman --noconfirm -Syu && \
 		switch-libopus \
 		switch-ffmpeg \
 		switch-mbedtls \
-		switch-libjson-c\
 		switch-miniupnpc  && \
 		yes | pacman -Scc
 
 # the `pacman --noconfirm -Scc` command
 # does not assume yes on /var/cache/pacman/pkg/
+
+WORKDIR /json-c
+RUN git clone https://github.com/json-c/json-c.git /json-c
+WORKDIR /json-c/json-c-build
+RUN cmake /json-c
+RUN make
+RUN make install
 
 VOLUME ${WORKDIR}
 
