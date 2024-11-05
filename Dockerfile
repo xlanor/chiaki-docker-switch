@@ -64,4 +64,4 @@ VOLUME ${WORKDIR}
 
 # nxlink server port
 EXPOSE 28771
-ENTRYPOINT ["/bin/bash"]
+CMD ["/bin/bash"]
