@@ -2,4 +2,4 @@
 
 cd "`dirname $(readlink -f ${0})`"
 
-docker build "$@" -t chiaki-switch .
+podman build "$@" -t chiaki-switch .
