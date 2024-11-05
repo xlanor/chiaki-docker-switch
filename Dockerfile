@@ -37,7 +37,7 @@ RUN pacman --noconfirm -Syu && \
 		fftw \
 		python-protobuf \
 		lib32-glibc \
-		openssl-1.1 \
+		openssl \
 		devkitARM \
 		switch-pkg-config \
 		dkp-toolchain-vars \
