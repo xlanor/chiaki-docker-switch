@@ -35,6 +35,8 @@ RUN pacman --noconfirm -Syu && \
 		fftw \
 		python-protobuf \
 		devkitARM \
+		json-c \
+		lib32-json-c \
 		switch-pkg-config \
 		dkp-toolchain-vars \
 		switch-dev \
@@ -56,7 +58,7 @@ RUN pacman --noconfirm -Syu && \
 		switch-libopus \
 		switch-ffmpeg \
 		switch-mbedtls \
-		switch-libjson-c \
+		switch-libjson-c\
 		switch-miniupnpc  && \
 		yes | pacman -Scc
 
