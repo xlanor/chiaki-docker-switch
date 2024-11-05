@@ -1,0 +1,30 @@
+name: Build and publish
+on: 
+  push:
+    tags:
+    - "*" # Running this workflow for any tag
+
+jobs:
+  push-webserver-image:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: .
+    steps:
+      - name: 'Checkout GitHub Action'
+        uses: actions/checkout@main
+      - name: Get the version
+        id: get_version
+        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+      - name: 'Login to GitHub Container Registry'
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{github.actor}}
+          password: ${{secrets.GITHUB_TOKEN}}
+      - name: 'Install podman'
+        run: sudo apt-get install -y podman
+      - name: 'Build chiaki-ng build image'
+        run: |
+          podman build "$@" --tag ghcr.io/xlanor/chiaki-build-switch:${{ steps.get_version.outputs.VERSION }}
+          podman push ghcr.io/xlanor/chiaki-build-switch:${{ steps.get_version.outputs.VERSION }}
