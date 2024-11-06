@@ -37,7 +37,6 @@ RUN pacman --noconfirm -Syu && \
 		fftw \
 		python-protobuf \
 		lib32-glibc \
-		openssl \
 		devkitARM \
 		switch-pkg-config \
 		dkp-toolchain-vars \
@@ -45,12 +44,12 @@ RUN pacman --noconfirm -Syu && \
 		switch-zlib \
 		switch-sdl2 \
 		switch-freetype \
-		switch-curl \
 		switch-glfw \
 		switch-mesa \
 		switch-glad \
 		switch-glm \
 		switch-libconfig \
+		switch-curl \
 		switch-sdl2_gfx \
 		switch-sdl2_ttf \
 		switch-sdl2_image \
@@ -59,6 +58,7 @@ RUN pacman --noconfirm -Syu && \
 		switch-bzip2 \
 		switch-libopus \
 		switch-ffmpeg \
+		switch-libjson-c \
 		switch-mbedtls \
 		switch-miniupnpc  && \
 		yes | pacman -Scc
@@ -66,12 +66,11 @@ RUN pacman --noconfirm -Syu && \
 # the `pacman --noconfirm -Scc` command
 # does not assume yes on /var/cache/pacman/pkg/
 
-WORKDIR /json-c
-RUN git clone https://github.com/json-c/json-c.git /json-c
-WORKDIR /json-c/json-c-build
-RUN cmake /json-c
-RUN make
-RUN make install
+
+
+
+# Reset the workdir
+WORKDIR ${WORKDIR}
 
 VOLUME ${WORKDIR}
 
