@@ -1,4 +1,4 @@
-FROM archlinux:latest
+FROM docker.io/menci/archlinuxarm:base-devel-20241108.11737040532
 
 RUN useradd --no-create-home --shell=/bin/false build && usermod -L build
 RUN echo "build ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
