@@ -1,1 +1,5 @@
-Reverted version of switch-curl for chiaki-ng which requires curl with openssl + websockets
+Changes:
+- autoconf 2.72 breaks with cross compilation, check this [issue](https://github.com/curl/curl/issues/5126). Bumped to curl 8.11.0.
+- Use mbedtls for now rather than libnx because there's so much code in chiaki-ng using mbedtls and I have no idea whats going on yet. The idea is to get a working build first.
+- Enable wss support in curl because I can see quite abit of code around that introduced in chiaki-ng after chiaki was built.
+

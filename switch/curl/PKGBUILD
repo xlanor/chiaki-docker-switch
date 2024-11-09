@@ -1,7 +1,10 @@
 
-# Maintainer: WinterMute <davem@devkitpro.org>
+# Maintainer: Jingkai Tan <contact@jingk.ai>. 
+# Based on the source here https://github.com/devkitPro/pacman-packages/tree/5cf3a4da7665a04032565a3e788656cb485dd279/switch/curl
+# Original Author: WinterMute <davem@devkitpro.org>
+# This targets a specific build of curl for the Nintendo Switch with certain flags for chiaki-ng
 pkgname=switch-curl
-pkgver=8.4.0
+pkgver=8.11.0
 pkgrel=1
 pkgdesc='An URL retrieval utility and library'
 arch=('any')
@@ -12,21 +15,17 @@ depends=('switch-zlib' 'switch-mbedtls')
 makedepends=('switch-pkg-config' 'dkp-toolchain-vars')
 source=(
     "https://curl.haxx.se/download/curl-${pkgver}.tar.xz"
-    'switch-curl.patch'
 )
 groups=('switch-portlibs')
 
 sha256sums=(
- '03c7d5e6697f7b7e40ada1b2256e565a555657398e6c1fcfa4cb251ccd819d4f'
- '723c7d884fc7c39ae1a3115ba245bb8c1415da47bbd60ab8f943ca98f92ebc9a'
+ 'db59cf0d671ca6e7f5c2c5ec177084a33a79e04c97e71cf183a5cdea235054eb'
 )
 
 build() {
   cd curl-$pkgver
   LDFLAGS="-specs=${DEVKITPRO}/libnx/switch.specs ${LDFLAGS}"
   source /opt/devkitpro/switchvars.sh
-  ./buildconf
-  ./configure --help
   ./configure \
     --prefix=$PORTLIBS_PREFIX \
     --host=aarch64-none-elf \

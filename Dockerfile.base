@@ -1,4 +1,5 @@
-FROM archlinux:latest
+# Using my raspberry pi as a build server.
+FROM docker.io/menci/archlinuxarm:base-devel-20241108.11737040532
 
 RUN useradd --no-create-home --shell=/bin/false build && usermod -L build
 RUN echo "build ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
@@ -22,17 +23,22 @@ RUN pacman-key --recv BC26F752D25B92CE272E0F44F7FD5492264BB9D0 --keyserver keyse
 RUN pacman --noconfirm -U https://downloads.devkitpro.org/devkitpro-keyring.pkg.tar.xz
 ADD devkit_repo ./devkit_repo
 RUN cat ./devkit_repo >> /etc/pacman.conf
-RUN pacman --noconfirm -Syu && \
-	pacman --noconfirm -Su \
+# Use --needed, menci has already packaged quite a number of stuff
+# in basedevel
+RUN pacman --noconfirm -Sy && \
+	pacman --noconfirm --needed -Su \
     debugedit \
     fakeroot \
     sudo \
     autoconf \
     automake \
     libtool \
+    devkitARM \
     gcc \
     glibc \
-    base-devel \ 
+    base-devel \
+    protobuf \
+    python-protobuf \ 
     switch-pkg-config \
     dkp-toolchain-vars \
     switch-zlib \
