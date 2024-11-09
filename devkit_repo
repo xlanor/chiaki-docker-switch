@@ -4,6 +4,3 @@ Server = http://pkg.devkitpro.org/packages
 [dkp-linux]
 Server = http://pkg.devkitpro.org/packages/linux/$arch/
 
-# lib32-json-c
-[multilib]
-Include = /etc/pacman.d/mirrorlist

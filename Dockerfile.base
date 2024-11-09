@@ -1,4 +1,4 @@
-FROM docker.io/menci/archlinuxarm:base-devel-20241108.11737040532
+FROM archlinux:latest
 
 RUN useradd --no-create-home --shell=/bin/false build && usermod -L build
 RUN echo "build ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
@@ -30,6 +30,8 @@ RUN pacman --noconfirm -Syu && \
     autoconf \
     automake \
     libtool \
+    gcc \
+    glibc \
     base-devel \ 
     switch-pkg-config \
     dkp-toolchain-vars \
