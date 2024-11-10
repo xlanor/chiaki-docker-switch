@@ -24,8 +24,9 @@ sha256sums=(
 build() {
   cd curl-$pkgver || return 1
   source /opt/devkitpro/switchvars.sh
-  export LDFLAGS="-specs=${DEVKITPRO}/libnx/switch.specs ${LDFLAGS}"
+
   ./configure \
+    LDFLAGS="-specs=${DEVKITPRO}/libnx/switch.specs ${LDFLAGS}" \
     --prefix="$PORTLIBS_PREFIX" \
     --host=aarch64-none-elf \
     --disable-shared --enable-static \
@@ -39,7 +40,7 @@ build() {
     --disable-pop3 --disable-rtsp --disable-smb \
     --disable-smtp --disable-telnet --disable-tftp \
     --disable-alt-svc --disable-headers-api --disable-hsts
-  echo "Finished configure"
+  sed -i 's/#define HAVE_SOCKETPAIR 1//' lib/curl_config.h
   make -C lib
 
 }
