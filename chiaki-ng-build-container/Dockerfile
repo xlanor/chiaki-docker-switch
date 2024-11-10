@@ -1,5 +1,5 @@
 #https://github.com/devkitPro/pacman/releases
-FROM docker.io/library/archlinux:latest
+FROM docker.io/archlinux/archlinux:base-devel-20241109.0.278052
 
 ENV DEVKITPRO=/opt/devkitpro
 ENV DEVKITARM=/opt/devkitpro/devkitARM
@@ -49,7 +49,6 @@ RUN pacman --noconfirm -Syu && \
 		switch-glad \
 		switch-glm \
 		switch-libconfig \
-		switch-curl \
 		switch-sdl2_gfx \
 		switch-sdl2_ttf \
 		switch-sdl2_image \
@@ -65,10 +64,18 @@ RUN pacman --noconfirm -Syu && \
 
 # the `pacman --noconfirm -Scc` command
 # does not assume yes on /var/cache/pacman/pkg/
+RUN useradd --no-create-home --shell=/bin/false build && usermod -L build
+RUN echo "build ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+RUN echo "root ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
+# Install compiled curl
+USER build
+COPY --chown=build:build output/packages /switch-curl
+COPY --chown=build:build switch/curl/PKGBUILD /switch-curl/PKGBUILD
+WORKDIR /switch-curl
+RUN yes | makepkg --syncdeps --install
 
-
-
+USER root
 # Reset the workdir
 WORKDIR ${WORKDIR}
 
