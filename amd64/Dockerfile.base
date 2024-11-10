@@ -44,7 +44,7 @@ RUN sudo pacman --noconfirm -Sy && \
 
 COPY --chown=build:build /switch/curl /tmp/curl
 WORKDIR /tmp/curl
-RUN makepkg --syncdeps --install
+RUN yes | makepkg --syncdeps --install
 
 CMD ["/bin/bash"]
 
