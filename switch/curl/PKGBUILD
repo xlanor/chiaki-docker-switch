@@ -1,5 +1,4 @@
-
-# Maintainer: Jingkai Tan <contact@jingk.ai>. 
+# Maintainer: Jingkai Tan <contact@jingk.ai>.
 # Based on the source here https://github.com/devkitPro/pacman-packages/tree/5cf3a4da7665a04032565a3e788656cb485dd279/switch/curl
 # Original Author: WinterMute <davem@devkitpro.org>
 # This targets a specific build of curl for the Nintendo Switch with certain flags for chiaki-ng
@@ -14,29 +13,35 @@ options=(!strip libtool staticlibs)
 depends=('switch-zlib' 'switch-mbedtls')
 makedepends=('switch-pkg-config' 'dkp-toolchain-vars')
 source=(
-    "https://curl.haxx.se/download/curl-${pkgver}.tar.xz"
+  "https://curl.haxx.se/download/curl-${pkgver}.tar.xz"
 )
 groups=('switch-portlibs')
 
 sha256sums=(
- 'db59cf0d671ca6e7f5c2c5ec177084a33a79e04c97e71cf183a5cdea235054eb'
+  'db59cf0d671ca6e7f5c2c5ec177084a33a79e04c97e71cf183a5cdea235054eb'
 )
 
 build() {
-  cd curl-$pkgver
-  LDFLAGS="-specs=${DEVKITPRO}/libnx/switch.specs ${LDFLAGS}"
+  cd curl-$pkgver || return 1
   source /opt/devkitpro/switchvars.sh
+  export LDFLAGS="-specs=${DEVKITPRO}/libnx/switch.specs ${LDFLAGS}"
   ./configure \
-    --prefix=$PORTLIBS_PREFIX \
+    --prefix="$PORTLIBS_PREFIX" \
     --host=aarch64-none-elf \
-    --disable-shared --enable-static --disable-ipv6 --disable-unix-sockets \
-    --disable-manual --disable-ntlm-wb --disable-threaded-resolver \
-    --without-ssl --without-polar-ssl --without-cyassl --without-wolfssl \
-    --with-mbedtls=$PORTLIBS_PREFIX \
-    --with-default-ssl-backend=mbedtls 
+    --disable-shared --enable-static \
+    --disable-ipv6 --disable-unix-sockets --disable-socketpair \
+    --disable-manual --disable-threaded-resolver \
+    --without-wolfssl --without-libpsl \
+    --with-mbedtls="$PORTLIBS_PREFIX" \
+    --with-default-ssl-backend=mbedtls \
+    --disable-dict --disable-file --disable-ftp \
+    --disable-gopher --disable-imap --disable-mqtt \
+    --disable-pop3 --disable-rtsp --disable-smb \
+    --disable-smtp --disable-telnet --disable-tftp \
+    --disable-alt-svc --disable-headers-api --disable-hsts
   echo "Finished configure"
   make -C lib
-  
+
 }
 
 package() {
