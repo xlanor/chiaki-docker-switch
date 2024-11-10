@@ -1,0 +1,50 @@
+FROM docker.io/archlinux/archlinux:base-devel-20241109.0.278052
+
+RUN useradd --no-create-home --shell=/bin/false build && usermod -L build
+RUN echo "build ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+RUN echo "root ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+
+USER build
+ENV DEVKITPRO=/opt/devkitpro
+ENV DEVKITARM=/opt/devkitpro/devkitARM
+ENV DEVKITPPC=/opt/devkitpro/devkitPPC
+ENV PATH="${PATH}:${DEVKITARM}/bin/:${DEVKITPPC}/bin/"
+ENV WORKDIR="/build"
+WORKDIR "${WORKDIR}"
+RUN sudo pacman-key --init
+# Install devkitpro
+# doc source :
+# https://devkitpro.org/wiki/devkitPro_pacman
+
+# First import the key which is used to validate the packages
+
+RUN sudo pacman-key --recv BC26F752D25B92CE272E0F44F7FD5492264BB9D0 --keyserver keyserver.ubuntu.com && \
+    sudo pacman-key --lsign BC26F752D25B92CE272E0F44F7FD5492264BB9D0
+
+RUN sudo pacman --noconfirm -U https://downloads.devkitpro.org/devkitpro-keyring.pkg.tar.xz
+ADD ../devkit_repo ./devkit_repo
+RUN sudo sh -c 'cat ./devkit_repo >> /etc/pacman.conf'
+RUN sudo pacman --noconfirm -Sy && \
+	sudo pacman --noconfirm --needed -Su \
+    debugedit \
+    fakeroot \
+    sudo \
+    autoconf \
+    automake \
+    libtool \
+    devkitA64 \
+    base-devel \
+    protobuf \
+    python-protobuf \ 
+    switch-pkg-config \
+    dkp-toolchain-vars \
+    switch-zlib \
+    switch-mbedtls \
+    switch-dev 
+
+COPY --chown=build:build /switch/curl /tmp/curl
+WORKDIR /tmp/curl
+RUN makepkg --syncdeps --install
+
+CMD ["/bin/bash"]
+
