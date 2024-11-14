@@ -1,1 +1,1 @@
-podman push docker.io/xlanor/chiaki-ng-switch-builder:latest 
+docker push docker.io/xlanor/chiaki-ng-switch-builder:latest 

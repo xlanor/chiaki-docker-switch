@@ -17,7 +17,7 @@ shift $((OPTIND-1))
 
 
 if [[ "$BASE" -eq 1 ]]; then
-    podman build -f curl-build/Dockerfile.base \
+    docker build -f curl-build/Dockerfile.base \
                 -t ${IMAGE_NAME} .
 else
 
@@ -29,7 +29,7 @@ else
 
   # Run the container
   echo "Starting container with ${SCRIPT_NAME}..."
-  podman run \
+  docker run \
       --rm \
       -v "$(pwd)/curl-build/${SCRIPT_NAME}:/${SCRIPT_NAME}:Z" \
       -v "$(pwd)/switch/curl/PKGBUILD:/switch/curl/PKGBUILD:Z" \

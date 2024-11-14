@@ -1,5 +1,5 @@
 #https://github.com/devkitPro/pacman/releases
-FROM docker.io/archlinux/archlinux:base-devel-20241109.0.278052
+FROM docker.io/archlinux/archlinux:base-20241110.0.278291
 
 ENV DEVKITPRO=/opt/devkitpro
 ENV DEVKITARM=/opt/devkitpro/devkitARM
@@ -31,12 +31,12 @@ RUN pacman --noconfirm -Syu && \
 		make \
 		ninja \
 		cmake \
-		gcc \
 		vim \
 		protobuf \
-		fftw \
-		python-protobuf \
+		sudo \
+		aarch64-linux-gnu-glibc \
 		lib32-glibc \
+		python-protobuf \
 		devkitARM \
 		switch-pkg-config \
 		dkp-toolchain-vars \
@@ -59,14 +59,13 @@ RUN pacman --noconfirm -Syu && \
 		switch-ffmpeg \
 		switch-libjson-c \
 		switch-mbedtls \
-		switch-miniupnpc  && \
-		yes | pacman -Scc
+		switch-miniupnpc
 
-# the `pacman --noconfirm -Scc` command
 # does not assume yes on /var/cache/pacman/pkg/
-RUN useradd --no-create-home --shell=/bin/false build && usermod -L build
+RUN useradd --no-create-home --shell=/bin/bash build && usermod -L build
 RUN echo "build ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 RUN echo "root ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+RUN echo "%wheel ALL=(ALL) NOPASSWD: /usr/bin/pacman" >> /etc/sudoers
 
 # Install compiled curl
 USER build
