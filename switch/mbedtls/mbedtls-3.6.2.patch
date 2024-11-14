@@ -1,0 +1,122 @@
+diff --git a/include/mbedtls/ecdh.h b/include/mbedtls/ecdh.h
+index a6a5069..63a6bf4 100644
+--- a/include/mbedtls/ecdh.h
++++ b/include/mbedtls/ecdh.h
+@@ -38,11 +38,7 @@
+  * context fields directly and with restartable ECP operations.
+  */
+ 
+-#if defined(MBEDTLS_ECP_RESTARTABLE)
+ #define MBEDTLS_ECDH_LEGACY_CONTEXT
+-#else
+-#undef MBEDTLS_ECDH_LEGACY_CONTEXT
+-#endif
+ 
+ #if defined(MBEDTLS_ECDH_VARIANT_EVEREST_ENABLED)
+ #undef MBEDTLS_ECDH_LEGACY_CONTEXT
+diff --git a/include/mbedtls/private_access.h b/include/mbedtls/private_access.h
+index 580f3eb..3412bb7 100644
+--- a/include/mbedtls/private_access.h
++++ b/include/mbedtls/private_access.h
+@@ -12,7 +12,7 @@
+ #define MBEDTLS_PRIVATE_ACCESS_H
+ 
+ #ifndef MBEDTLS_ALLOW_PRIVATE_ACCESS
+-#define MBEDTLS_PRIVATE(member) private_##member
++#define MBEDTLS_PRIVATE(member) member 
+ #else
+ #define MBEDTLS_PRIVATE(member) member
+ #endif
+diff --git a/library/common.h b/library/common.h
+index 7bb2674..46d84dc 100644
+--- a/library/common.h
++++ b/library/common.h
+@@ -199,7 +199,7 @@ static inline void mbedtls_xor(unsigned char *r,
+         uint8x16_t x = veorq_u8(v1, v2);
+         vst1q_u8(r + i, x);
+     }
+-#if defined(__IAR_SYSTEMS_ICC__)
++#if defined(__IAR_SYSTEMS_ICC__) || defined(MBEDTLS_COMPILER_IS_GCC)
+     /* This if statement helps some compilers (e.g., IAR) optimise out the byte-by-byte tail case
+      * where n is a constant multiple of 16.
+      * For other compilers (e.g. recent gcc and clang) it makes no difference if n is a compile-time
+diff --git a/library/entropy.c b/library/entropy.c
+index 7dcf067..3a44dbd 100644
+--- a/library/entropy.c
++++ b/library/entropy.c
+@@ -58,6 +58,18 @@ void mbedtls_entropy_init(mbedtls_entropy_context *ctx)
+ #endif
+ #endif /* MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES */
+ }
++#ifdef __SWITCH__
++    #include <switch.h>
++    int mbedtls_hardware_poll( void *data,
++                               unsigned char *output, size_t len, size_t *olen )
++    {
++        (void)(data);
++        csrngGetRandomBytes(output, len);
++        if(olen)
++            *olen = len;
++        return 0;
++    }
++#endif
+ 
+ void mbedtls_entropy_free(mbedtls_entropy_context *ctx)
+ {
+diff --git a/library/entropy_poll.c b/library/entropy_poll.c
+index 611768c..f1f631f 100644
+--- a/library/entropy_poll.c
++++ b/library/entropy_poll.c
+@@ -31,7 +31,7 @@
+ 
+ #if !defined(unix) && !defined(__unix__) && !defined(__unix) && \
+     !defined(__APPLE__) && !defined(_WIN32) && !defined(__QNXNTO__) && \
+-    !defined(__HAIKU__) && !defined(__midipix__) && !defined(__MVS__)
++    !defined(__HAIKU__) && !defined(__midipix__) && !defined(__MVS__) 
+ #error \
+     "Platform entropy sources only work on Unix and Windows, see MBEDTLS_NO_PLATFORM_ENTROPY in mbedtls_config.h"
+ #endif
+diff --git a/library/net_sockets.c b/library/net_sockets.c
+index ef89a88..f2d26c0 100644
+--- a/library/net_sockets.c
++++ b/library/net_sockets.c
+@@ -21,7 +21,7 @@
+ 
+ #if !defined(unix) && !defined(__unix__) && !defined(__unix) && \
+     !defined(__APPLE__) && !defined(_WIN32) && !defined(__QNXNTO__) && \
+-    !defined(__HAIKU__) && !defined(__midipix__)
++    !defined(__HAIKU__) && !defined(__midipix__)  && !defined(__SWITCH__)
+ #error "This module only works on Unix and Windows, see MBEDTLS_NET_C in mbedtls_config.h"
+ #endif
+ 
+diff --git a/library/platform_util.c b/library/platform_util.c
+index 19ef07a..2c693de 100644
+--- a/library/platform_util.c
++++ b/library/platform_util.c
+@@ -220,11 +220,11 @@ void (*mbedtls_test_hook_test_fail)(const char *, int, const char *);
+ #include <time.h>
+ #if !defined(_WIN32) && \
+     (defined(unix) || defined(__unix) || defined(__unix__) || \
+-    (defined(__APPLE__) && defined(__MACH__)) || defined(__HAIKU__) || defined(__midipix__))
++    (defined(__APPLE__) && defined(__MACH__)) || defined(__HAIKU__) || defined(__midipix__)) || defined(__SWITCH__)
+ #include <unistd.h>
+ #endif \
+     /* !_WIN32 && (unix || __unix || __unix__ || (__APPLE__ && __MACH__) || __HAIKU__ || __midipix__) */
+-#if (defined(_POSIX_VERSION) && _POSIX_VERSION >= 199309L) || defined(__HAIKU__)
++#if (defined(_POSIX_VERSION) && _POSIX_VERSION >= 199309L) || defined(__HAIKU__) || defined(__SWITCH__)
+ mbedtls_ms_time_t mbedtls_ms_time(void)
+ {
+     int ret;
+diff --git a/library/timing.c b/library/timing.c
+index 58f1c1e..1cb47dc 100644
+--- a/library/timing.c
++++ b/library/timing.c
+@@ -15,7 +15,7 @@
+ 
+ #if !defined(unix) && !defined(__unix__) && !defined(__unix) && \
+     !defined(__APPLE__) && !defined(_WIN32) && !defined(__QNXNTO__) && \
+-    !defined(__HAIKU__) && !defined(__midipix__)
++    !defined(__HAIKU__) && !defined(__midipix__)  && !defined(__SWITCH__)
+ #error "This module only works on Unix and Windows, see MBEDTLS_TIMING_C in mbedtls_config.h"
+ #endif
+ 

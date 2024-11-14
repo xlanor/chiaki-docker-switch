@@ -28,7 +28,11 @@ RUN sudo pacman --noconfirm -Sy && \
 	sudo pacman --noconfirm --needed -Su \
     debugedit \
     fakeroot \
+    cmake \
+    make \
     sudo \
+    libarchive \
+    git \
     autoconf \
     automake \
     bash \
@@ -40,7 +44,6 @@ RUN sudo pacman --noconfirm -Sy && \
     switch-pkg-config \
     dkp-toolchain-vars \
     switch-zlib \
-    switch-mbedtls \
     switch-dev 
 
 CMD ["/bin/bash"]

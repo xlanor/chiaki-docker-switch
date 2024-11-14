@@ -29,6 +29,8 @@ RUN pacman --noconfirm -Syu && \
 		git \
 		pkg-config \
 		make \
+		fakeroot \
+		debugedit \
 		ninja \
 		cmake \
 		vim \
@@ -58,7 +60,6 @@ RUN pacman --noconfirm -Syu && \
 		switch-libopus \
 		switch-ffmpeg \
 		switch-libjson-c \
-		switch-mbedtls \
 		switch-miniupnpc
 
 # does not assume yes on /var/cache/pacman/pkg/
@@ -69,7 +70,12 @@ RUN echo "%wheel ALL=(ALL) NOPASSWD: /usr/bin/pacman" >> /etc/sudoers
 
 # Install compiled curl
 USER build
-COPY --chown=build:build output/packages /switch-curl
+WORKDIR /
+COPY --chown=build:build output/packages/mbedtls /switch-mbedtls
+COPY --chown=build:build switch/mbedtls/PKGBUILD /switch-mbedtls/PKGBUILD
+WORKDIR /switch-mbedtls
+RUN yes | makepkg --syncdeps --install 
+COPY --chown=build:build output/packages/curl /switch-curl
 COPY --chown=build:build switch/curl/PKGBUILD /switch-curl/PKGBUILD
 WORKDIR /switch-curl
 RUN yes | makepkg --syncdeps --install

@@ -33,8 +33,9 @@ build() {
     --disable-ipv6 --disable-unix-sockets --disable-socketpair \
     --disable-manual --disable-threaded-resolver \
     --without-wolfssl --without-libpsl \
-    --with-mbedtls=/opt/devkitpro/portlibs/switch \
+    --with-mbedtls=$PORTLIBS_PREFIX \
     --with-default-ssl-backend=mbedtls \
+    --enable-websockets
   sed -i 's/#define HAVE_SOCKETPAIR 1//' lib/curl_config.h
   make -C lib
 

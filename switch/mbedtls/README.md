@@ -1,0 +1,2 @@
+- Added switch compilation flags
+- Allow private access for struct members. I know this is not what mbedtls wants. I've tried everything. the public interface is too restricted to do what chiaki needs to do

@@ -21,6 +21,10 @@ if [[ "$BASE" -eq 1 ]]; then
                 -t ${IMAGE_NAME} .
 else
 
+  # Cleanup mbedtls artifacts 
+  rm -rf ./switch/mbedtls/pkg
+  rm -rf ./switch/mbedtls/src
+  rm -f ./switch/mbedtls/*.bz2
   # Create output directory if it doesn't exist
   mkdir -p "${OUTPUT_DIR}"
 
@@ -33,11 +37,12 @@ else
       --rm \
       -v "$(pwd)/curl-build/${SCRIPT_NAME}:/${SCRIPT_NAME}:Z" \
       -v "$(pwd)/switch/curl/PKGBUILD:/switch/curl/PKGBUILD:Z" \
+      -v "$(pwd)/switch/mbedtls:/switch/mbedtls:Z" \
       -v "$(pwd)/${OUTPUT_DIR}:/output:Z" \
       --user build \
       -e WORKDIR=/output \
       "${IMAGE_NAME}" \
-      /bin/sh -c "sudo rm -rf /output/* && sudo chown build:build /switch/curl && cd / && ./${SCRIPT_NAME}"
-
+      /bin/sh -c "sudo rm -rf /output/* && sudo chown -R build:build /switch && cd / && ./${SCRIPT_NAME}"
+  
   echo "curl has been compiled."
 fi
