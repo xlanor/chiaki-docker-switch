@@ -1,5 +1,5 @@
 # Maintainer: Jingkai Tan <contact@jingk.ai>.
-# Based on the source here https://github.com/devkitPro/pacman-packages/tree/5cf3a4da7665a04032565a3e788656cb485dd279/switch/curl
+# Based on the source here https://github.com/devkitPro/pacman-packages/tree/master/switch/mbedtls
 # Original Author: WinterMute <davem@devkitpro.org>
 # This targets a specific build of mbedtls for the Nintendo Switch with certain flags for chiaki-ng
 # Do not use outside of this specific use case. This performs certain unsafe patches on mbedtls

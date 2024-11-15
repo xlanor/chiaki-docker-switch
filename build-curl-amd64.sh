@@ -17,7 +17,7 @@ shift $((OPTIND-1))
 
 
 if [[ "$BASE" -eq 1 ]]; then
-    docker build -f curl-build/Dockerfile.base \
+    docker build --no-cache -f curl-build/Dockerfile.base \
                 -t ${IMAGE_NAME} .
 else
 
@@ -37,8 +37,8 @@ else
       --rm \
       -v "$(pwd)/curl-build/${SCRIPT_NAME}:/${SCRIPT_NAME}:Z" \
       -v "$(pwd)/switch/curl/PKGBUILD:/switch/curl/PKGBUILD:Z" \
-      -v "$(pwd)/switch/mbedtls:/switch/mbedtls:Z" \
       -v "$(pwd)/${OUTPUT_DIR}:/output:Z" \
+      -v "$(pwd)/switch/mbedtls:/switch/mbedtls:Z" \
       --user build \
       -e WORKDIR=/output \
       "${IMAGE_NAME}" \
