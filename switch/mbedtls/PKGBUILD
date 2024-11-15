@@ -50,7 +50,7 @@ package() {
   cd mbedtls-$pkgver
 
   source /opt/devkitpro/switchvars.sh
-
+  echo "DESTDIR ${pkgdir}"
   make install DESTDIR="$pkgdir"
 
   install -d "$pkgdir"$PORTLIBS_PREFIX/licenses/$pkgname
