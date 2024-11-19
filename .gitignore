@@ -1,3 +1,6 @@
 switch/mbedtls/pkg
 switch/mbedtls/src
 switch/mbedtls/*.bz2
+switch/dav1d/*.tar.gz
+switch/dav1d/pkg
+switch/dav1d/src

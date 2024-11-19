@@ -68,13 +68,19 @@ RUN echo "build ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 RUN echo "root ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 RUN echo "%wheel ALL=(ALL) NOPASSWD: /usr/bin/pacman" >> /etc/sudoers
 
-# Install compiled curl
+# Install compiled curl, dav1d, mbedtls
 USER build
 WORKDIR /
+WORKDIR /switch-dav1d
+COPY --chown=build:build output/packages/dav1d /switch-dav1d
+COPY --chown=build:build switch/dav1d/PKGBUILD /switch-dav1d/PKGBUILD
+RUN yes | makepkg --syncdeps --install 
+
 COPY --chown=build:build output/packages/mbedtls /switch-mbedtls
 COPY --chown=build:build switch/mbedtls/PKGBUILD /switch-mbedtls/PKGBUILD
 WORKDIR /switch-mbedtls
 RUN yes | makepkg --syncdeps --install 
+
 COPY --chown=build:build output/packages/curl /switch-curl
 COPY --chown=build:build switch/curl/PKGBUILD /switch-curl/PKGBUILD
 WORKDIR /switch-curl

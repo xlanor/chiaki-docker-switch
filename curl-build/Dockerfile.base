@@ -36,6 +36,7 @@ RUN sudo pacman --noconfirm -Sy && \
     autoconf \
     automake \
     bash \
+    meson \
     libtool \
     devkitA64 \
     base-devel \
@@ -43,6 +44,7 @@ RUN sudo pacman --noconfirm -Sy && \
     python-protobuf \ 
     switch-pkg-config \
     dkp-toolchain-vars \
+    dkp-meson-scripts \
     switch-zlib \
     switch-dev 
 
