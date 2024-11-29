@@ -6,8 +6,8 @@ rm -rf *
 cd /switch/dav1d
 yes | PKGDEST=/output/packages/dav1d makepkg --syncdeps --install
 # Build mbedtls first,
-cd /switch/mbedtls
-yes | PKGDEST=/output/packages/mbedtls makepkg --syncdeps --install
+# cd /switch/mbedtls
+# yes | PKGDEST=/output/packages/mbedtls makepkg --syncdeps --install
 # Then build curl to link to mbedtls,
 cd /switch/curl
 yes | PKGDEST=/output/packages/curl makepkg --syncdeps --install

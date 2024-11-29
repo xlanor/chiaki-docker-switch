@@ -1,0 +1,54 @@
+# Maintainer: Jingkai Tan <contact@jingk.ai>.
+# Based on the source here https://github.com/devkitPro/pacman-packages/tree/5cf3a4da7665a04032565a3e788656cb485dd279/switch/curl
+# Original Author: WinterMute <davem@devkitpro.org>
+# This targets a specific build of curl for the Nintendo Switch with certain flags for chiaki-ng
+pkgname=switch-curl
+pkgver=8.11.0
+pkgrel=1
+pkgdesc='An URL retrieval utility and library'
+arch=('any')
+url='http://www.zlib.net/'
+license=('zlib')
+options=(!strip libtool staticlibs)
+depends=('switch-zlib')
+makedepends=('switch-pkg-config' 'dkp-toolchain-vars')
+source=(
+  "https://curl.haxx.se/download/curl-${pkgver}.tar.xz"
+)
+groups=('switch-portlibs')
+
+sha256sums=(
+  'db59cf0d671ca6e7f5c2c5ec177084a33a79e04c97e71cf183a5cdea235054eb'
+)
+
+build() {
+  cd curl-$pkgver || return 1
+  source /opt/devkitpro/switchvars.sh
+  echo "Portlibs ${PORTLIBS_PREFIX}" 
+  ./configure \
+    LDFLAGS="-specs=${DEVKITPRO}/libnx/switch.specs ${LDFLAGS}" \
+    --prefix="$PORTLIBS_PREFIX" \
+    --host=aarch64-none-elf \
+    --disable-shared \
+    --enable-static \
+    --disable-ipv6 --disable-unix-sockets --disable-socketpair \
+    --disable-manual --disable-threaded-resolver \
+    --without-wolfssl --without-libpsl \
+    --with-mbedtls=$PORTLIBS_PREFIX \
+    --with-default-ssl-backend=mbedtls \
+    --enable-websockets
+  sed -i 's/#define HAVE_SOCKETPAIR 1//' lib/curl_config.h
+  make -C lib
+
+}
+
+package() {
+  cd curl-$pkgver
+
+  source /opt/devkitpro/switchvars.sh
+  echo "DESTDIR ${pkgdir}"
+  make DESTDIR="$pkgdir" -C lib install
+  make DESTDIR="$pkgdir" -C include install
+  make DESTDIR="$pkgdir" install-binSCRIPTS install-pkgconfigDATA
+
+}

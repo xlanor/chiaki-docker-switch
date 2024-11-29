@@ -60,6 +60,7 @@ RUN pacman --noconfirm -Syu && \
 		switch-libopus \
 		switch-ffmpeg \
 		switch-libjson-c \
+		switch-mbedtls \
 		switch-miniupnpc
 
 # does not assume yes on /var/cache/pacman/pkg/
@@ -76,10 +77,6 @@ COPY --chown=build:build output/packages/dav1d /switch-dav1d
 COPY --chown=build:build switch/dav1d/PKGBUILD /switch-dav1d/PKGBUILD
 RUN yes | makepkg --syncdeps --install 
 
-COPY --chown=build:build output/packages/mbedtls /switch-mbedtls
-COPY --chown=build:build switch/mbedtls/PKGBUILD /switch-mbedtls/PKGBUILD
-WORKDIR /switch-mbedtls
-RUN yes | makepkg --syncdeps --install 
 
 COPY --chown=build:build output/packages/curl /switch-curl
 COPY --chown=build:build switch/curl/PKGBUILD /switch-curl/PKGBUILD

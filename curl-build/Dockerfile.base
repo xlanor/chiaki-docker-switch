@@ -46,6 +46,7 @@ RUN sudo pacman --noconfirm -Sy && \
     dkp-toolchain-vars \
     dkp-meson-scripts \
     switch-zlib \
+    switch-mbedtls \
     switch-dev 
 
 CMD ["/bin/bash"]
